@@ -20,11 +20,16 @@ function formatPhoneNumber(phoneNumber){
 // Parameter: phoneNumber (string): The input phone number
 // Returns: string: Formatted phone number in the format (XXX) XXX-XXXX
 // Console log: Return null and console log error if input is not a string or if the number is less than 10 digits
+// Add log to handle null, undefined, or non-string inputs    
+    if (typeof phoneNumber !== 'string') {
+        console.error("Invalid input: Input must be a string.");
+        return null;
+    }
     // Remove all non-digit characters
     const digits = phoneNumber.replace(/\D/g, '');
     // Check if the number has exactly 10 digits
     if (digits.length !== 10) {
-        console.log("Error: Invalid phone number format.");
+        console.error("Invalid phone number: Must contain exactly 10 digits.");
         return null;
     }
     // Format the number as (XXX) XXX-XXXX
@@ -32,11 +37,11 @@ function formatPhoneNumber(phoneNumber){
     return formattedNumber;
 }
 
-
-// Test Cases
-console.log(formatPhoneNumber("1234567890"));        // "(123) 456-7890"
-console.log(formatPhoneNumber("123-456-7890"));      // "(123) 456-7890"
-console.log(formatPhoneNumber("(123) 456-7890"));    // "(123) 456-7890"
-console.log(formatPhoneNumber("123"));                // null
-console.log(formatPhoneNumber("12345678901"));       // null
-console.log(formatPhoneNumber("abc"));                // null
+// Edge Test Cases
+console.log(formatPhoneNumber("987 654 3210"));      // "(987) 654-3210"
+console.log(formatPhoneNumber("987.654.3210"));      // "(987) 654-3210"
+console.log(formatPhoneNumber("9876543210abc"));     // "(987) 654-3210"
+console.log(formatPhoneNumber(""));                  // null
+console.log(formatPhoneNumber(null));                // null
+console.log(formatPhoneNumber(undefined));           // null
+console.log(formatPhoneNumber(1234567890));          // null
