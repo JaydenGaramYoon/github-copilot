@@ -12,6 +12,7 @@ Use GitHub Copilot to create a function that calculates the area of different ge
 
 ### Starting Code
 ```python
+
 # Function to calculate area of geometric shapes
 # Supports circle, rectangle, and triangle
 # Parameters: shape_type (string), dimensions (list or dict)
@@ -35,7 +36,6 @@ print(calculate_area("rectangle", {"width": 4, "height": 6}))  # Should return 2
 print(calculate_area("triangle", {"base": 10, "height": 8}))  # Should return 40
 print(calculate_area("invalid", {}))  # Should return None or raise error
 ```
-
 ---
 
 ## Exercise 2: Data Processing
@@ -68,7 +68,6 @@ students = [
     {"name": "Eve", "grade": 88, "subject": "Science"}
 ]
 ```
-
 ---
 
 ## Exercise 3: String Manipulation
