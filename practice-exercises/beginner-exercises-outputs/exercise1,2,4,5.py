@@ -43,28 +43,20 @@ print(calculate_area("invalid", {}))  # Should return None or raise error
 
 ### Task: Create a function that processes a list of student records and returns statistics.
 
-### Instructions
-#1. Start with a clear comment about the function's purpose
-#2. Use Copilot to generate the implementation
-#3. Include error handling
-
 ### Starting Code
 # Function to analyze student grades
 # Input: list of dictionaries with 'name', 'grade', 'subject' keys
 # Output: dictionary with statistics (average, highest, lowest, pass_rate)
+# Conditions:
 # Pass rate is percentage of grades >= 60
-# Add error handling for None and do return error for minus grades and 100 is the max grade.
-# if the value is 'inf' or '-inf', can you change the value to 'Wrong'? 
-# yes, I can do that. Let me add that now.
-# Can you really make that change now? when the value is not correct, then the value should be 'Wrong'.
+# Add error handling for None, minus grades.
+# Grade should not exceed 100.
+# When the value is not correct, then the value should be 'Wrong'.
+import logging
+
 def analyze_student_grades(student_records):
     if not student_records:
-        return {
-            "average": 0,
-            "highest": None,
-            "lowest": None,
-            "pass_rate": 0
-        }
+        raise ValueError("No student records provided.")
 
     total_grades = 0
     highest_grade = float('-inf')
@@ -88,21 +80,10 @@ def analyze_student_grades(student_records):
             lowest_grade = grade
 
     if valid_grades_count == 0:
-        return {
-            "average": 0,
-            "highest": 'Wrong',
-            "lowest": 'Wrong',
-            "pass_rate": 0
-        }
+        raise ValueError("No valid grades found.")
 
     average_grade = total_grades / valid_grades_count
     pass_rate = (pass_count / valid_grades_count) * 100
-
-    # If no valid grades, set highest/lowest to 'Wrong'
-    if highest_grade == float('-inf'):
-        highest_grade = 'Wrong'
-    if lowest_grade == float('inf'):
-        lowest_grade = 'Wrong'
 
     return {
         "average": average_grade,
@@ -110,8 +91,6 @@ def analyze_student_grades(student_records):
         "lowest": lowest_grade,
         "pass_rate": pass_rate
     }
-
-
 
 ### Sample Data
 students = [
@@ -124,40 +103,59 @@ students = [
 
 ### Test Case
 print("Exercise 2 test result:")
-## Test function to verify analyze_student_grades
-## Calculate each column and print the results
-## Write the code below 
-results = analyze_student_grades(students)
-print(f"Average Grade: {results['average']}")
-print(f"Highest Grade: {results['highest']}")
-print(f"Lowest Grade: {results['lowest']}")
-print(f"Pass Rate: {results['pass_rate']}%")
-print(analyze_student_grades(students))
+try:
+    results = analyze_student_grades(students)
+    print("happy) " + str(results))
+except ValueError as e:
+    print("happy) Error:", e)
 
 ## Test boundaries and edge cases
 # add expected results as comments 
-print("edge1) " + str(analyze_student_grades([])))  # Edge case: empty list
-# expected output: {'average': 0, 'highest': 'Wrong', 'lowest': 'Wrong', 'pass_rate': 0}
-## more edge cases
-print("edge2) " + str(analyze_student_grades([{"name": "Frank", "grade": 60, "subject": "Math"}])))  # Edge case: single passing student
-# expected output: {'average': 60.0, 'highest': 60, 'lowest': 60, 'pass_rate': 100.0}
-print("edge3) " + str(analyze_student_grades([{"name": "Grace", "grade": 59, "subject": "Math"}])))  # Edge case: single failing student
-# expected output: {'average': 59.0, 'highest': 59, 'lowest': 59, 'pass_rate': 0.0}
-## more edge cases
-print("edge4) " + str(analyze_student_grades([{"name": "Heidi", "grade": 100, "subject": "Science"}])))  # Edge case: perfect score
-# expected output: {'average': 100.0, 'highest': 100, 'lowest': 100, 'pass_rate': 100.0}
-print("edge5) " + str(analyze_student_grades([{"name": "Ivan", "grade": 0, "subject": "Science"}])))  # Edge case: zero score
-# expected output: {'average': 0.0, 'highest': 0, 'lowest': 0, 'pass_rate': 0.0}
-## more edge cases
-print("edge6) " + str(analyze_student_grades([{"name": "Judy", "grade": -10, "subject": "Math"}])))  # Edge case: negative score
-# expected output: {'average': 0, 'highest': 'Wrong', 'lowest': 'Wrong', 'pass_rate': 0}
-print("edge7) " + str(analyze_student_grades([{"name": "Karl", "grade": 150, "subject": "Math"}])))  # Edge case: score above 100
-# expected output: {'average': 0, 'highest': 'Wrong', 'lowest': 'Wrong', 'pass_rate': 0}
-## more edge cases
-print("edge8) " + str(analyze_student_grades([{"name": "Liam", "grade": None, "subject": "Math"}])))  # Edge case: None grade
-# expected output: {'average': 0, 'highest': 'Wrong', 'lowest': 'Wrong', 'pass_rate': 0}
-print("edge9) " + str(analyze_student_grades([{"name": "Mia", "subject": "Math"}])))  # Edge case: missing grade key
-# expected output: {'average': 0, 'highest': 'Wrong', 'lowest': 'Wrong', 'pass_rate': 0}
+try:
+    print("edge1) " + str(analyze_student_grades([])))  # Edge case: empty list
+except ValueError as e:
+    print("edge1) Error:", e)
+# expected: {'average': 60.0, 'highest': 60, 'lowest': 60, 'pass_rate': 100.0}
+try:
+    print("edge2) " + str(analyze_student_grades([{"name": "Frank", "grade": 60, "subject": "Math"}])))
+except ValueError as e:
+    print("edge2) Error:", e)
+# expected: {'average': 59.0, 'highest': 59, 'lowest': 59, 'pass_rate': 0.0}
+try:
+    print("edge3) " + str(analyze_student_grades([{"name": "Grace", "grade": 59, "subject": "Math"}])))
+except ValueError as e:
+    print("edge3) Error:", e)
+# expected: {'average': 100.0, 'highest': 100, 'lowest': 100, 'pass_rate': 100.0}
+try:
+    print("edge4) " + str(analyze_student_grades([{"name": "Heidi", "grade": 100, "subject": "Science"}])))
+except ValueError as e:
+    print("edge4) Error:", e)
+# expected: {'average': 0.0, 'highest': 0, 'lowest': 0, 'pass_rate': 0.0}
+try:
+    print("edge5) " + str(analyze_student_grades([{"name": "Ivan", "grade": 0, "subject": "Science"}])))
+except ValueError as e:
+    print("edge5) Error:", e) 
+# expected: {'average': 0.0, 'highest': 0, 'lowest': 0, 'pass_rate': 0.0}
+try:
+    print("edge6) " + str(analyze_student_grades([{"name": "Judy", "grade": -10, "subject": "Math"}])))
+except ValueError as e:
+    print("edge6) Error:", e) 
+# expected: ValueError("No valid grades found.")
+try:
+    print("edge7) " + str(analyze_student_grades([{"name": "Karl", "grade": 150, "subject": "Math"}])))
+except ValueError as e:
+    print("edge7) Error:", e) 
+# expected: ValueError("No valid grades found.")
+try:
+    print("edge8) " + str(analyze_student_grades([{"name": "Liam", "grade": None, "subject": "Math"}])))
+except ValueError as e:
+    print("edge8) Error:", e)
+# expected: ValueError("No valid grades found.")
+try:
+    print("edge9) " + str(analyze_student_grades([{"name": "Mia", "subject": "Math"}])))
+except ValueError as e:
+    print("edge9) Error:", e)
+# expected: ValueError("No valid grades found.")
 
 
 ## Exercise 4: API Response Handler
