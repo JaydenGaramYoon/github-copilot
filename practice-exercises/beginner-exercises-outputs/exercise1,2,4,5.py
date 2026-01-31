@@ -242,37 +242,47 @@ def read_config_file(file_path):
 # Let Copilot complete this implementation
 # exepcted error: add exeption handling for file not found, permission denied, and invalid format
     if not os.path.exists(file_path):
-        raise FileNotFoundError(f"The file {file_path} does not exist.")
+        raise FileNotFoundError(f"File not found: {file_path}")
     if not os.access(file_path, os.R_OK):
-        raise PermissionError(f"Permission denied to read the file {file_path}.")
-    
+        raise PermissionError(f"Permission denied: {file_path}")
+
     _, file_extension = os.path.splitext(file_path)
-    config_data = {}
-    
     try:
-        if file_extension == ".json":
-            with open(file_path, 'r') as file:
-                config_data = json.load(file)
-        elif file_extension in [".yaml", ".yml"]:
-            import yaml
-            with open(file_path, 'r') as file:
-                config_data = yaml.safe_load(file)
-        elif file_extension == ".ini":
-            import configparser
-            config = configparser.ConfigParser()
-            config.read(file_path)
-            config_data = {section: dict(config.items(section)) for section in config.sections()}
-        elif file_extension == ".txt":
-            with open(file_path, 'r') as file:
-                lines = file.readlines()
-                config_data = {"lines": [line.strip() for line in lines]}
-        else:
-            raise ValueError(f"Unsupported file format: {file_extension}")
+        with open(file_path, 'r') as file:
+            if file_extension == '.json':
+                return json.load(file)
+            elif file_extension in ['.yaml', '.yml']:
+                import yaml
+                return yaml.safe_load(file)
+            elif file_extension == '.ini':
+                import configparser
+                config = configparser.ConfigParser()
+                config.read_file(file)
+                return {section: dict(config.items(section)) for section in config.sections()}
+            elif file_extension == '.txt':
+                return {"content": file.read()}
+            else:
+                raise ValueError(f"Unsupported file format: {file_extension}")
+    except ValueError as ve:
+        raise ve
     except Exception as e:
-        raise ValueError(f"Error reading configuration file: {e}")
-    
-    return config_data
+        raise ValueError(f"Error reading file: {e}")
     
 ### Test Cases
+### Add edge case tests for non-existent file, permission denied, and invalid format
+
 print("Exercise 5 test results:")
 print(read_config_file("exercise5.txt"))  
+# Assuming exercise5.txt exists with some content
+# Add more test cases as needed
+# Test non-existent file
+try:
+    read_config_file("non_existent_file.cfg")
+except FileNotFoundError as e:
+    print(e)
+# Test permission denied (this may require setting file permissions manually)
+# Test invalid format
+try:
+    read_config_file("invalid_format.xyz")
+except ValueError as e:
+    print(e)
