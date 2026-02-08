@@ -1,3 +1,5 @@
+print("Day 3 (Jan 31, 2026): Beginner Exercises - Class Design, Algorithm Implementation, Test Generation")
+
 ## Exercise 6: Class Design
 
 ### Task: Create a simple class for managing a shopping cart.
